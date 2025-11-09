@@ -258,10 +258,10 @@ h2{color:var(--accent);margin:0 0 12px 0}
 const DB = {
   animes:[{id:'onepiece',title:'One Piece',year:1999,eps:1000,desc:'رحلة مونكي دي لوفي وطاقمه للعثور على الكنز الأسطوري One Piece.',cover:'https://i.ibb.co/5KXftx8/luffy.jpg'}],
   characters:[
-    {id:'luffy',name:'مونكي دي. لوفي',role:'قائد طاقم قبعة القش',img:'https://i.ibb.co/5KXftx8/luffy.jpg',desc:'قائد مغامر وله قوة فاكهة غومو غومو.',powers:'فاكهة الشيطان: غومو غومو — هاكي'},
-    {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'https://i.ibb.co/2NsfwKg/zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'تقنيات السيف • هاكي'},
+    {id:'luffy',name:'مونكي دي. لوفي',role:'قائد طاقم قبعة القش',img:'luffy.jpg',desc:'قائد مغامر وله قوة فاكهة غومو غومو.',powers:'فاكهة الشيطان: غومو غومو — هاكي'},
+    {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'تقنيات السيف • هاكي'},
     {id:'nami',name:'نامي',role:'الملاح',img:'https://i.ibb.co/mH5SWGf/nami.jpg',desc:'ملاح بارع وخبيرة الطقس.',powers:'مهارات ملاحة واستخدام الكليما تاكت'},
-    {id:'sanji',name:'سانجي',role:'الطباخ',img:'https://i.ibb.co/TtXgT9V/sanji.jpg',desc:'طباخ الطاقم ومقاتل بأسلوب الركل.',powers:'قوة بدنية وتقنيات قتالية'}
+    {id:'sanji',name:'سانجي',role:'الطباخ',img:'sanji.jpg',desc:'طباخ الطاقم ومقاتل بأسلوب الركل.',powers:'قوة بدنية وتقنيات قتالية'}
   ],
   crew:['luffy','zoro','nami','sanji'],
   powers:[
