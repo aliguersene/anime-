@@ -45,7 +45,7 @@ h2{color:var(--accent);margin:0 0 12px 0}
 .thumb img{
   width:100%;
   height:100%;
-  aspect-ratio:1/1;
+  aspect-ratio:1/1; /* مربع دائم */
   object-fit:cover;
   display:block;
   border-radius:0;
@@ -125,7 +125,7 @@ h2{color:var(--accent);margin:0 0 12px 0}
   color: #111;
   font-weight: bold;
 }
-#botHeader button {background: linear-gradient(90deg,#000,#fff);border: none;font-size: 20px;cursor: pointer;border-radius:6px;}
+#botHeader button {background: transparent;border: none;font-size: 20px;cursor: pointer;}
 #botMessages2 {flex: 1;padding: 10px;overflow-y: auto;display: flex;flex-direction: column;gap: 8px;}
 #botMessages2 .msg.user {align-self: flex-end;background: rgba(255,255,255,0.1);color: var(--text);padding: 8px;border-radius: 8px;}
 #botMessages2 .msg.bot {align-self: flex-start;background: rgba(255,59,59,0.15);color: var(--text);padding: 8px;border-radius: 8px;}
@@ -141,6 +141,7 @@ h2{color:var(--accent);margin:0 0 12px 0}
 </head>
 <body data-theme="dark">
 <div class="wrap">
+
 <header>
   <div class="brand">
     <div class="logo"><img src="https://i.ibb.co/6X9Gk2B/ag-anime-emblem.png" alt="AG ANIME"></div>
@@ -167,7 +168,7 @@ h2{color:var(--accent);margin:0 0 12px 0}
   </div>
 </header>
 
-<!-- المحتوى الرئيسي -->
+<!-- صفحات (كل صفحة عنصر .page) -->
 <main id="home" class="content page" style="display:block">
   <section class="panel">
     <h2>نظرة عامة — ون بيس</h2>
@@ -193,7 +194,7 @@ h2{color:var(--accent);margin:0 0 12px 0}
   </aside>
 </main>
 
-<!-- صفحات إضافية -->
+<!-- صفحة الشخصيات (تفتح عند الضغط على الشخصيات) -->
 <section id="charactersPage" class="panel page" style="display:none;max-width:1300px;margin:18px auto">
   <h2 style="color:var(--accent)">قائمة الشخصيات</h2>
   <div id="charactersList" class="grid"></div>
@@ -251,125 +252,403 @@ h2{color:var(--accent);margin:0 0 12px 0}
 </div>
 
 <script>
-// --------------------------------
-// قاعدة البيانات
-// --------------------------------
+/* ---------------------------
+   قاعدة البيانات الداخلية (قابلة للتوسيع)
+   --------------------------- */
 const DB = {
-  animes:[{id:'onepiece',title:'One Piece',year:1999,eps:1000,desc:'رحلة مونكي دي لوفي وطاقمه للعثور على الكنز الأسطوري One Piece.',cover:'luffy.jpg'}],
+  animes:[{id:'onepiece',title:'One Piece',year:1999,eps:1000,desc:'رحلة مونكي دي لوفي وطاقمه للعثور على الكنز الأسطوري One Piece.',cover:'https://i.ibb.co/5KXftx8/luffy.jpg'}],
   characters:[
     {id:'luffy',name:'مونكي دي. لوفي',role:'قائد طاقم قبعة القش',img:'https://i.ibb.co/5KXftx8/luffy.jpg',desc:'قائد مغامر وله قوة فاكهة غومو غومو.',powers:'فاكهة الشيطان: غومو غومو — هاكي'},
-    {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'هاكي ملكي وهاكي تسللي'}
-  ]
-}
+    {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'https://i.ibb.co/2NsfwKg/zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'تقنيات السيف • هاكي'},
+    {id:'nami',name:'نامي',role:'الملاح',img:'https://i.ibb.co/mH5SWGf/nami.jpg',desc:'ملاح بارع وخبيرة الطقس.',powers:'مهارات ملاحة واستخدام الكليما تاكت'},
+    {id:'sanji',name:'سانجي',role:'الطباخ',img:'https://i.ibb.co/TtXgT9V/sanji.jpg',desc:'طباخ الطاقم ومقاتل بأسلوب الركل.',powers:'قوة بدنية وتقنيات قتالية'}
+  ],
+  crew:['luffy','zoro','nami','sanji'],
+  powers:[
+    {id:'devilfruits',title:'الفواكه الشيطانية',desc:'أنواع فواكه الشيطان: باراميشيا، زو، لوجيا.'},
+    {id:'haki',title:'الهاكي',desc:'قوة روحية تعطي تحكماً في القوة.'}
+  ],
+  episodes:[
+    {id:'ep1',anime:'onepiece',num:1,title:'بداية الرحلة',summary:'لوفي يغادر قريته ويشرع في رحلته.'},
+    {id:'ep37',anime:'onepiece',num:37,title:'اللقاء مع زورو',summary:'انضمام زورو إلى الطاقم.'}
+  ],
+  maps:[{id:'grandline',title:'الجراند لاين',desc:'الممر البحري الرئيسي في عالم ون بيس.'},{id:'wano',title:'مملكة وانو',desc:'أراضي تقليدية ذات ثقافة يابانية قوية.'}],
+};
 
-// --------------------------------
-// وظائف البوت
-// --------------------------------
-const botIcon = document.getElementById('botIcon');
-const botPopup = document.getElementById('botPopup');
-const botInput = document.getElementById('botInput2');
-const botSend = document.getElementById('botSend2');
-const botMessages = document.getElementById('botMessages2');
-
-botIcon.onclick = ()=>botPopup.style.display = 'flex';
-botSend.onclick = ()=>{
-  const val = botInput.value.trim();
-  if(!val) return;
-  botMessages.innerHTML += `<div class="msg user">${val}</div>`;
-  botInput.value='';
-  // رد تلقائي بسيط
-  let reply = 'عذرًا، هذه النسخة تجريبية. سأجيب لاحقًا!';
-  for(let c of DB.characters){
-    if(val.includes(c.name.split(' ')[0])) reply=`معلومات عن ${c.name}: ${c.desc}`;
-  }
-  botMessages.innerHTML += `<div class="msg bot">${reply}</div>`;
-  botMessages.scrollTop = botMessages.scrollHeight;
-}
-
-// --------------------------------
-// المودال
-// --------------------------------
-function openModal(title,img,desc,info){
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalImg').src = img;
-  document.getElementById('modalDesc').textContent = desc;
-  document.getElementById('modalInfo').textContent = info;
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(e){if(!e||e.target.classList.contains('modal'))document.getElementById('modal').classList.remove('open')}
-
-// --------------------------------
-// عرض الشخصيات
-// --------------------------------
+/* ---------------------------
+   عناصر DOM مركزية
+   --------------------------- */
 const charactersGrid = document.getElementById('charactersGrid');
-DB.characters.forEach(c=>{
-  const card = document.createElement('div');
-  card.className='card visible';
-  card.innerHTML=`
-    <div class="thumb"><img src="${c.img}" alt="${c.name}"></div>
-    <div class="meta">
-      <h3>${c.name}</h3>
-      <p>${c.role}</p>
-      <div class="stars">
-        <span data-star="1">★</span>
-        <span data-star="2">★</span>
-        <span data-star="3">★</span>
-        <span data-star="4">★</span>
-        <span data-star="5">★</span>
+const charactersList = document.getElementById('charactersList');
+const crewList = document.getElementById('crewList');
+const epList = document.getElementById('epList');
+const episodesFull = document.getElementById('episodesFull');
+const gallery = document.getElementById('gallery');
+const miniArticles = document.getElementById('miniArticles');
+const mapsList = document.getElementById('mapsList');
+
+/* ---------------------------
+   التخزين: المفضلات والنجوم
+   --------------------------- */
+function favKey(){ return 'ag_onepiece_favs_v1'; }
+function getFavs(){ return JSON.parse(localStorage.getItem(favKey())||'[]'); }
+function toggleFavId(id){
+  const favs = getFavs();
+  if(favs.includes(id)){ localStorage.setItem(favKey(), JSON.stringify(favs.filter(x=>x!==id))); return false; }
+  favs.push(id); localStorage.setItem(favKey(), JSON.stringify(favs)); return true;
+}
+function starsKey(){ return 'ag_onepiece_stars_v1'; }
+function getStarMap(){ return JSON.parse(localStorage.getItem(starsKey())||'{}'); }
+function setStar(id,val){ const m=getStarMap(); m[id]=val; localStorage.setItem(starsKey(), JSON.stringify(m)); }
+
+/* ---------------------------
+   إنشاء بطاقة شخصية (مستخدمة في عدة صفحات)
+   - النقر على البطاقة يفتح المودال
+   - النجوم قابلة للنقر وتُخزن
+   - القلب (المفضلة) أبيض افتراضياً ويصبح أحمر عند الضغط
+   --------------------------- */
+function makeCharCard(c){
+  const d = document.createElement('div');
+  d.className = 'card visible';
+  d.innerHTML = `
+    <div class='thumb'><img loading='lazy' src='${c.img}' alt='${c.name}'></div>
+    <div class='meta'>
+      <h3>${escapeHtml(c.name)}</h3>
+      <p class='muted'>${escapeHtml(c.role)}</p>
+      <div class="stars" data-id="${c.id}">
+        <span data-i="1">★</span><span data-i="2">★</span><span data-i="3">★</span><span data-i="4">★</span><span data-i="5">★</span>
       </div>
-      <div class="heart">❤</div>
-      <button class="btn primary">تفاصيل</button>
+      <div style="margin-top:8px">
+        <span class="heart" data-id="${c.id}" title="أضف إلى المفضلات">♡</span>
+      </div>
     </div>
   `;
-  charactersGrid.appendChild(card);
 
-  // النجوم
-  card.querySelectorAll('.stars span').forEach(star=>{
-    star.addEventListener('click', ()=> {
-      card.querySelectorAll('.stars span').forEach(s=>s.classList.remove('active'));
-      for(let i=1;i<=parseInt(star.dataset.star);i++) card.querySelector(`.stars span[data-star="${i}"]`).classList.add('active');
-    })
-  })
+  // فتح المودال عند الضغط على البطاقة (باستثناء النجوم أو القلب)
+  d.addEventListener('click', (ev)=>{
+    const target = ev.target;
+    if(target.closest('.stars') || target.classList.contains('heart')) return;
+    openModal('character', c.id);
+  });
 
-  // القلوب
-  const heart = card.querySelector('.heart');
-  heart.onclick = ()=>heart.classList.toggle('liked');
+  // إعداد النجوم (عرض وحفظ)
+  const stars = d.querySelector('.stars');
+  const starSpans = Array.from(stars.querySelectorAll('span'));
+  function refreshStars(){
+    const cur = getStarMap()[c.id] || 0;
+    starSpans.forEach(s=>{
+      const i = Number(s.dataset.i);
+      if(i <= cur) s.classList.add('active'); else s.classList.remove('active');
+    });
+  }
+  starSpans.forEach(s=>{
+    s.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const i = Number(s.dataset.i);
+      setStar(c.id, i);
+      refreshStars();
+    });
+  });
+  refreshStars();
 
-  // تفاصيل
-  card.querySelector('button').onclick = ()=>openModal(c.name,c.img,c.desc,c.powers);
+  // إعداد القلب (مفضلة)
+  const heart = d.querySelector('.heart');
+  function refreshHeart(){
+    if(getFavs().includes(c.id)) heart.classList.add('liked'); else heart.classList.remove('liked');
+  }
+  heart.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const liked = toggleFavId(c.id);
+    if(liked) heart.classList.add('liked'); else heart.classList.remove('liked');
+  });
+  refreshHeart();
+
+  return d;
+}
+
+/* ---------------------------
+   رندر الصفحة الرئيسية والصفحات الأخرى
+   --------------------------- */
+function createArticle(title, excerpt){
+  const a = document.createElement('article');
+  a.className = 'panel';
+  a.style.padding = '12px';
+  a.innerHTML = `<h3>${escapeHtml(title)}</h3><p class="muted" style="margin-top:8px">${escapeHtml(excerpt)}</p>`;
+  return a;
+}
+
+function renderHome(){
+  charactersGrid.innerHTML = '';
+  DB.characters.forEach(ch => charactersGrid.appendChild(makeCharCard(ch)));
+
+  epList.innerHTML = '';
+  DB.episodes.forEach(e=>{
+    const el = document.createElement('div');
+    el.className = 'episode';
+    el.innerHTML = `<div><strong>#${e.num} — ${escapeHtml(e.title)}</strong><div class="muted">${escapeHtml(e.summary||'')}</div></div><div class="muted">${escapeHtml(e.anime)}</div>`;
+    epList.appendChild(el);
+  });
+
+  gallery.innerHTML = '';
+  DB.characters.forEach(c=>{
+    const img = document.createElement('img');
+    img.src = c.img;
+    img.alt = c.name;
+    gallery.appendChild(img);
+  });
+
+  miniArticles.innerHTML = '';
+  miniArticles.appendChild(createArticle('ما هي الفواكه الشيطانية؟','شرح مبسط لأنواع الفواكه وقيودها.'));
+  miniArticles.appendChild(createArticle('مفهوم الهاكي','أنواعه وكيف يعمل في القتال.'));
+
+  observeCards();
+}
+
+function renderCharactersPage(){
+  charactersList.innerHTML = '';
+  DB.characters.forEach(c => charactersList.appendChild(makeCharCard(c)));
+  observeCards();
+}
+
+function renderCrewPage(){
+  crewList.innerHTML = '';
+  DB.crew.forEach(id=>{
+    const c = DB.characters.find(x=>x.id===id);
+    if(c) crewList.appendChild(makeCharCard(c));
+  });
+  observeCards();
+}
+
+function renderPowersPage(){
+  const box = document.getElementById('powersList');
+  if(!box) return;
+  box.innerHTML = '';
+  DB.powers.forEach(p=>{
+    const art = createArticle(p.title, p.desc);
+    box.appendChild(art);
+  });
+}
+
+function renderEpisodesPage(){
+  if(!episodesFull) return;
+  episodesFull.innerHTML = '';
+  DB.episodes.forEach(e=>{
+    const d = document.createElement('div');
+    d.className = 'panel';
+    d.style.marginBottom = '10px';
+    d.innerHTML = `<strong>#${e.num} — ${escapeHtml(e.title)}</strong><p class="muted">${escapeHtml(e.summary||'')}</p><button class="btn" onclick="openModal('episode','${e.id}')">عرض</button>`;
+    episodesFull.appendChild(d);
+  });
+}
+
+function renderMapsPage(){
+  mapsList.innerHTML = '';
+  DB.maps.forEach(m=>{
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.style.padding = '12px';
+    d.innerHTML = `<div class='meta'><h3>${escapeHtml(m.title)}</h3><p class='muted'>${escapeHtml(m.desc)}</p></div><div class='actions'><button class='btn' onclick="openModal('map','${m.id}')">عرض</button></div>`;
+    mapsList.appendChild(d);
+  });
+  observeCards();
+}
+
+/* ---------------------------
+   Modal (تفاصيل)
+   --------------------------- */
+const modal = document.getElementById('modal');
+function openModal(type, id){
+  playClick();
+  let data = null;
+  if(type === 'character') data = DB.characters.find(x=>x.id===id);
+  if(type === 'episode') data = DB.episodes.find(x=>x.id===id);
+  if(type === 'map') data = DB.maps.find(x=>x.id===id);
+  if(!data){ alert('لا توجد بيانات'); return; }
+  document.getElementById('modalTitle').textContent = data.title || data.name;
+  document.getElementById('modalImg').src = data.img || data.cover || '';
+  document.getElementById('modalDesc').textContent = data.desc || data.summary || '';
+  document.getElementById('modalInfo').textContent = (data.powers?('قدرات: '+data.powers):'') + (data.year?(' • عام: '+data.year):'');
+  modal.classList.add('open');
+}
+function closeModal(e){ if(e && e.stopPropagation) e.stopPropagation(); modal.classList.remove('open'); }
+
+/* ---------------------------
+   click sound placeholder (music removed as requested)
+   --------------------------- */
+const clickSfx = null;
+function playClick(){ try{ if(clickSfx) clickSfx.play(); }catch(e){} }
+
+/* ---------------------------
+   IntersectionObserver للبطاقات (تأثير الظهور)
+   --------------------------- */
+function observeCards(){
+  const cards = document.querySelectorAll('.card');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){ en.target.classList.add('visible'); io.unobserve(en.target); }
+    });
+  },{threshold:0.12});
+  cards.forEach(c => io.observe(c));
+}
+
+/* ---------------------------
+   مساعدة: حماية من XSS في النصوص
+   --------------------------- */
+function escapeHtml(s){
+  if(!s) return '';
+  return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+/* ---------------------------
+   بحث محلي داخل DB
+   --------------------------- */
+document.getElementById('searchInput').addEventListener('input', e=>{
+  const q = e.target.value.trim().toLowerCase();
+  if(!q){ showPage('home'); renderHome(); return; }
+  const ch = DB.characters.filter(x=> x.name.toLowerCase().includes(q) || x.role.toLowerCase().includes(q));
+  const ep = DB.episodes.filter(x=> (''+x.num).includes(q) || x.title.toLowerCase().includes(q));
+  const pw = DB.powers.filter(x=> x.title.toLowerCase().includes(q) || x.desc.toLowerCase().includes(q));
+  charactersGrid.innerHTML = '';
+  ch.forEach(c => charactersGrid.appendChild(makeCharCard(c)));
+  epList.innerHTML = '';
+  ep.forEach(e=>{ const el=document.createElement('div'); el.className='episode'; el.innerHTML=`<div><strong>#${e.num} — ${escapeHtml(e.title)}</strong><div class="muted">${escapeHtml(e.summary||'')}</div></div><div class="muted">${escapeHtml(e.anime)}</div>`; epList.appendChild(el); });
+  miniArticles.innerHTML = '';
+  pw.forEach(p=> miniArticles.appendChild(createArticle(p.title,p.desc)));
+  observeCards();
 });
 
-// --------------------------------
-// تغيير الثيم
-// --------------------------------
-document.getElementById('themeToggle').onclick = ()=>{
-  document.body.dataset.theme = document.body.dataset.theme==='dark'?'light':'dark';
+/* ---------------------------
+   Navigation SPA بسيطة (عرض صفحة في نفس الملف)
+   --------------------------- */
+document.querySelectorAll('nav a').forEach(a=> a.addEventListener('click', navClick));
+function navClick(e){
+  e.preventDefault();
+  document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+  const t = this.dataset.target;
+  showPage(t);
+  if(t === 'home'){ renderHome(); }
+  if(t === 'characters'){ renderCharactersPage(); }
+  if(t === 'crew'){ renderCrewPage(); }
+  if(t === 'powers'){ renderPowersPage(); }
+  if(t === 'episodes'){ renderEpisodesPage(); }
+  if(t === 'maps'){ renderMapsPage(); }
 }
-
-// --------------------------------
-// التنقل بين الصفحات
-// --------------------------------
-document.querySelectorAll('nav a').forEach(a=>{
-  a.onclick = e=>{
-    e.preventDefault();
-    document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-    const target = document.getElementById(a.dataset.target+'Page') || document.getElementById(a.dataset.target);
-    if(target) target.style.display='block';
-    document.querySelectorAll('nav a').forEach(n=>n.classList.remove('active'));
-    a.classList.add('active');
+function showPage(key){
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(p=> p.style.display = 'none');
+  if(key === 'home') document.getElementById('home').style.display = 'grid';
+  else document.getElementById('home').style.display = 'none';
+  const mapping = {
+    'characters':'charactersPage',
+    'crew':'crewPage',
+    'powers':'powersPage',
+    'episodes':'episodesPage',
+    'maps':'mapsPage'
+  };
+  Object.values(mapping).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  if(mapping[key]){
+    const el = document.getElementById(mapping[key]);
+    if(el) el.style.display = 'block';
   }
-})
-
-// --------------------------------
-// البحث
-// --------------------------------
-document.getElementById('searchInput').oninput = e=>{
-  const val = e.target.value.toLowerCase();
-  document.querySelectorAll('.card').forEach(card=>{
-    const text = card.querySelector('h3').textContent.toLowerCase();
-    card.style.display = text.includes(val)?'flex':'none';
-  })
 }
+
+/* ---------------------------
+   Theme toggle (داكن/فاتح)
+   --------------------------- */
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const el = document.body;
+  const t = el.getAttribute('data-theme') || 'dark';
+  const next = t === 'dark' ? 'light' : 'dark';
+  el.setAttribute('data-theme', next);
+  localStorage.setItem('ag_theme', next);
+});
+(function(){ const t=localStorage.getItem('ag_theme')||'dark'; document.body.setAttribute('data-theme',t); })();
+
+/* ---------------------------
+   Init: render home & fill lists
+   --------------------------- */
+renderHome();
+renderCharactersPage();
+renderCrewPage();
+renderPowersPage();
+renderEpisodesPage();
+renderMapsPage();
+
+/* ---------------------------
+   close modal on esc
+   --------------------------- */
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+
+/* ---------------------------
+   Bot (قواعد بسيطة، مع حفظ المحادثة في localStorage)
+   --------------------------- */
+const BOT_KB = [
+  {q:['لوفي','luffy'], a:'لوفي هو قائد طاقم قبعة القش. حلمه أن يصبح ملك القراصنة!'},
+  {q:['زورو'], a:'زورو هو السياف الأول في الطاقم، يستخدم ثلاث سيوف.'},
+  {q:['سانجي'], a:'سانجي هو طباخ الطاقم، يستخدم قدميه في القتال.'},
+  {q:['نامي'], a:'نامي هي ملاح الطاقم وخبيرة الطقس.'}
+];
+
+function botQuery(text){
+  const t = text.trim().toLowerCase();
+  for(const item of BOT_KB){
+    for(const k of item.q) if(t.includes(k)) return item.a;
+  }
+  return 'عذرًا، لم أجد إجابة لهذا السؤال.';
+}
+
+const botIcon = document.getElementById('botIcon');
+const botPopup = document.getElementById('botPopup');
+const botMessages2 = document.getElementById('botMessages2');
+const botInput2 = document.getElementById('botInput2');
+const botSend2 = document.getElementById('botSend2');
+
+botIcon.addEventListener('click', ()=> {
+  botPopup.style.display = (botPopup.style.display === 'flex') ? 'none' : 'flex';
+  botPopup.style.flexDirection = 'column';
+});
+
+botSend2.addEventListener('click', sendBotMessage);
+botInput2.addEventListener('keydown', e=>{ if(e.key === 'Enter') sendBotMessage(); });
+
+function addBotMsg(type, text){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (type === 'user' ? 'user' : 'bot');
+  d.textContent = text;
+  botMessages2.appendChild(d);
+  botMessages2.scrollTop = botMessages2.scrollHeight;
+}
+function sendBotMessage(){
+  const txt = botInput2.value.trim();
+  if(!txt) return;
+  addBotMsg('user', txt);
+  botInput2.value = '';
+  saveBotMemory();
+  setTimeout(()=>{
+    const ans = botQuery(txt);
+    addBotMsg('bot', ans);
+    saveBotMemory();
+  }, 300);
+}
+function saveBotMemory(){
+  localStorage.setItem('botChat', botMessages2.innerHTML);
+}
+function loadBotMemory(){
+  const d = localStorage.getItem('botChat');
+  if(d) botMessages2.innerHTML = d;
+}
+loadBotMemory();
+
+/* ---------------------------
+   safety: expose helpers globally when needed by inline handlers
+   --------------------------- */
+window.openModal = openModal;
+window.closeModal = closeModal;
+
 </script>
 </body>
 </html>
