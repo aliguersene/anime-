@@ -255,10 +255,10 @@ h2{color:var(--accent);margin:0 0 12px 0}
 // قاعدة البيانات
 // --------------------------------
 const DB = {
-  animes:[{id:'onepiece',title:'One Piece',year:1999,eps:1000,desc:'رحلة مونكي دي لوفي وطاقمه للعثور على الكنز الأسطوري One Piece.',cover:'https://i.ibb.co/5KXftx8/luffy.jpg'}],
+  animes:[{id:'onepiece',title:'One Piece',year:1999,eps:1000,desc:'رحلة مونكي دي لوفي وطاقمه للعثور على الكنز الأسطوري One Piece.',cover:'luffy.jpg'}],
   characters:[
     {id:'luffy',name:'مونكي دي. لوفي',role:'قائد طاقم قبعة القش',img:'https://i.ibb.co/5KXftx8/luffy.jpg',desc:'قائد مغامر وله قوة فاكهة غومو غومو.',powers:'فاكهة الشيطان: غومو غومو — هاكي'},
-    {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'https://i.ibb.co/2NsfwKg/zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'هاكي ملكي وهاكي تسللي'}
+    {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'هاكي ملكي وهاكي تسللي'}
   ]
 }
 
