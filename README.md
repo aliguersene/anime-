@@ -260,7 +260,7 @@ const DB = {
   characters:[
     {id:'luffy',name:'مونكي دي. لوفي',role:'قائد طاقم قبعة القش',img:'luffy.jpg',desc:'قائد مغامر وله قوة فاكهة غومو غومو.',powers:'فاكهة الشيطان: غومو غومو — هاكي'},
     {id:'zoro',name:'رورونوا زورو',role:'سياف الطاقم',img:'zoro.jpg',desc:'سيفي يسعى لأن يصبح أعظم سيفي.',powers:'تقنيات السيف • هاكي'},
-    {id:'nami',name:'نامي',role:'الملاح',img:'https://i.ibb.co/mH5SWGf/nami.jpg',desc:'ملاح بارع وخبيرة الطقس.',powers:'مهارات ملاحة واستخدام الكليما تاكت'},
+    {id:'nami',name:'نامي',role:'الملاح',img:'nami.jpg',desc:'ملاح بارع وخبيرة الطقس.',powers:'مهارات ملاحة واستخدام الكليما تاكت'},
     {id:'sanji',name:'سانجي',role:'الطباخ',img:'sanji.jpg',desc:'طباخ الطاقم ومقاتل بأسلوب الركل.',powers:'قوة بدنية وتقنيات قتالية'}
   ],
   crew:['luffy','zoro','nami','sanji'],
