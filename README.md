@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AG ANIME — نسخة الهاتف</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AG ANIME — نسخة الهاتف كاملة</title>
 <style>
 :root{
   --bg:#000; --panel:#111; --card:#1a1a1a; --accent:#ff3b3b; --accent-2:#ffb86b; --muted:#bdbdbd; --radius:12px; --shadow:0 10px 40px rgba(0,0,0,0.6);
@@ -15,7 +15,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:10p
 .logo{width:50px;height:50px;border-radius:10px;overflow:hidden;}
 .logo img{width:100%;height:100%;object-fit:cover;}
 nav{display:flex;gap:6px;overflow-x:auto;}
-nav a{flex-shrink:0;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:13px;}
+nav a{flex-shrink:0;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:13px;white-space:nowrap;}
 nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;}
 .content{display:flex;flex-direction:column;gap:12px;}
 .panel{background:var(--panel);padding:12px;border-radius:var(--radius);}
@@ -27,7 +27,7 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 .meta p{margin:4px 0 0 0;color:var(--muted);font-size:12px;}
 .btn{padding:6px 8px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;font-size:13px;cursor:pointer;}
 
-/* Modal responsive */
+/* Modal */
 .modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,0.8);visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s;z-index:999;}
 .modal.open{visibility:visible;opacity:1;}
 .modal-card{width:95%;background:#1a1a1a;padding:12px;border-radius:12px;}
@@ -66,9 +66,43 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
   <section class="panel">
     <h2>نظرة عامة — ون بيس</h2>
     <p class="muted">مرحبًا بك في قسم One Piece. ملفات مفصلة عن الشخصيات، الطاقم، الفواكه الشيطانية، الهاكي، وقوائم الحلقات.</p>
-    <div id="charactersGrid" class="grid"></div>
   </section>
 </main>
+
+<section id="characters" class="content page">
+  <section class="panel">
+    <h2>الشخصيات</h2>
+    <div id="charactersGrid" class="grid"></div>
+  </section>
+</section>
+
+<section id="crew" class="content page">
+  <section class="panel">
+    <h2>طاقم الطاقم</h2>
+    <div id="crewGrid" class="grid"></div>
+  </section>
+</section>
+
+<section id="powers" class="content page">
+  <section class="panel">
+    <h2>الفواكه الشيطانية والهاكي</h2>
+    <div id="powersGrid" class="grid"></div>
+  </section>
+</section>
+
+<section id="episodes" class="content page">
+  <section class="panel">
+    <h2>الحلقات</h2>
+    <div id="episodesGrid" class="grid"></div>
+  </section>
+</section>
+
+<section id="maps" class="content page">
+  <section class="panel">
+    <h2>الخرائط</h2>
+    <div id="mapsGrid" class="grid"></div>
+  </section>
+</section>
 
 <!-- Modal -->
 <div id="modal" class="modal" onclick="closeModal(event)">
@@ -96,40 +130,60 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 </div>
 
 <script>
-/* قاعدة البيانات */
-const DB={characters:[{id:'luffy',name:'لوفي',role:'قائد',img:'https://i.ibb.co/5KXftx8/luffy.jpg'}]};
+const DB={
+  characters:[
+    {id:'luffy',name:'لوفي',role:'قائد',img:'https://i.ibb.co/5KXftx8/luffy.jpg'},
+    {id:'zoro',name:'زورو',role:'سيفي',img:'https://i.ibb.co/ZMnkP4r/zoro.jpg'},
+    {id:'nami',name:'نامي',role:'ملاح',img:'https://i.ibb.co/4s0YpFJ/nami.jpg'}
+  ],
+  crew:[
+    {id:'sanji',name:'سانجي',role:'طباخ',img:'https://i.ibb.co/KGfG6dP/sanji.jpg'}
+  ],
+  powers:[
+    {id:'gomu',name:'غوما غوما',desc:'فاكهة لوفى الشيطانية',img:'https://i.ibb.co/XxYqT1S/gomu.jpg'}
+  ],
+  episodes:[
+    {id:'ep1',name:'الحلقة 1',desc:'بداية المغامرة',img:'https://i.ibb.co/YTzK5H3/ep1.jpg'}
+  ],
+  maps:[
+    {id:'map1',name:'جزيرة لومب',desc:'جزيرة لومب',img:'https://i.ibb.co/s5cX9vC/map1.jpg'}
+  ]
+};
 
-/* عناصر DOM */
-const charactersGrid = document.getElementById('charactersGrid');
+const navLinks = document.querySelectorAll('nav a');
+const pages = document.querySelectorAll('.page');
+
+navLinks.forEach(link=>{
+  link.addEventListener('click',()=>{
+    navLinks.forEach(a=>a.classList.remove('active'));
+    link.classList.add('active');
+    const target=link.dataset.target;
+    pages.forEach(p=>p.style.display=(p.id===target)?'block':'none');
+  });
+});
 
 /* عرض البطاقات */
-function makeCharCard(c){
-  const d=document.createElement('div');
-  d.className='card';
-  d.innerHTML=`<div class='thumb'><img src='${c.img}'></div><div class='meta'><h3>${c.name}</h3><p class='muted'>${c.role}</p></div>`;
-  d.addEventListener('click',()=>openModal('character',c.id));
-  return d;
-}
-
-function renderHome(){
-  charactersGrid.innerHTML='';
-  DB.characters.forEach(c=>charactersGrid.appendChild(makeCharCard(c)));
-}
-renderHome();
+function makeCard(c){const d=document.createElement('div');d.className='card';d.innerHTML=`<div class='thumb'><img src='${c.img}'></div><div class='meta'><h3>${c.name}</h3><p class='muted'>${c.role||c.desc}</p></div>`;d.addEventListener('click',()=>openModal('item',c.id));return d;}
+function renderGrid(gridId,data){const g=document.getElementById(gridId);g.innerHTML='';data.forEach(d=>g.appendChild(makeCard(d)));}
+renderGrid('charactersGrid',DB.characters);
+renderGrid('crewGrid',DB.crew);
+renderGrid('powersGrid',DB.powers);
+renderGrid('episodesGrid',DB.episodes);
+renderGrid('mapsGrid',DB.maps);
 
 /* Modal */
 const modal=document.getElementById('modal');
 function openModal(type,id){
-  const data = DB.characters.find(x=>x.id===id);
+  let data=[...DB.characters,...DB.crew,...DB.powers,...DB.episodes,...DB.maps].find(x=>x.id===id);
   if(!data) return;
   document.getElementById('modalTitle').textContent = data.name;
   document.getElementById('modalImg').src = data.img;
-  document.getElementById('modalDesc').textContent = data.role;
+  document.getElementById('modalDesc').textContent = data.role||data.desc||'';
   modal.classList.add('open');
 }
 function closeModal(e){if(e&&e.stopPropagation)e.stopPropagation(); modal.classList.remove('open');}
 
-/* Bot بسيط */
+/* Bot */
 const BOT_KB=[{q:['لوفي'],a:'لوفي قائد الطاقم وحلمه أن يصبح ملك القراصنة!'}];
 const botIcon=document.getElementById('botIcon');
 const botPopup=document.getElementById('botPopup');
