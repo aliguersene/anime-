@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -19,7 +20,8 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 .content{display:flex;flex-direction:column;gap:12px;}
 .panel{background:var(--panel);padding:12px;border-radius:var(--radius);}
 .grid{display:grid;grid-template-columns:1fr;gap:12px;}
-.card{display:flex;gap:8px;align-items:center;padding:10px;border-radius:var(--radius);background:var(--card);border:1px solid rgba(255,255,255,0.05);}
+.card{display:flex;gap:8px;align-items:center;padding:10px;border-radius:var(--radius);background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:0.2s;}
+.card:hover{transform:scale(1.02);}
 .thumb{flex:0 0 80px;height:80px;border-radius:8px;overflow:hidden;background:#222;display:flex;align-items:center;justify-content:center;}
 .thumb img{width:100%;height:100%;object-fit:cover;}
 .meta h3{margin:0;font-size:14px;}
@@ -129,29 +131,21 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 </div>
 
 <script>
-const DB={
-  characters:[
-    {id:'luffy',name:'لوفي',role:'قائد',img:'https://i.ibb.co/5KXftx8/luffy.jpg'},
-    {id:'zoro',name:'زورو',role:'سيفي',img:'https://i.ibb.co/ZMnkP4r/zoro.jpg'},
-    {id:'nami',name:'نامي',role:'ملاح',img:'https://i.ibb.co/4s0YpFJ/nami.jpg'}
-  ],
-  crew:[
-    {id:'sanji',name:'سانجي',role:'طباخ',img:'https://i.ibb.co/KGfG6dP/sanji.jpg'}
-  ],
-  powers:[
-    {id:'gomu',name:'غوما غوما',desc:'فاكهة لوفى الشيطانية',img:'https://i.ibb.co/XxYqT1S/gomu.jpg'}
-  ],
-  episodes:[
-    {id:'ep1',name:'الحلقة 1',desc:'بداية المغامرة',img:'https://i.ibb.co/YTzK5H3/ep1.jpg'}
-  ],
-  maps:[
-    {id:'map1',name:'جزيرة لومب',desc:'جزيرة لومب',img:'https://i.ibb.co/s5cX9vC/map1.jpg'}
-  ]
+// =====================
+// قاعدة البيانات
+// =====================
+const DB = {
+  characters:[ /* استخدم نفس القائمة الكاملة من الرد السابق */ ],
+  powers:[ /* قائمة القوى كاملة */ ],
+  episodes:[ /* قائمة الحلقات كاملة */ ],
+  maps:[ /* قائمة الخرائط كاملة */ ]
 };
 
+// =====================
+// التنقل بين الصفحات
+// =====================
 const navLinks = document.querySelectorAll('nav a');
 const pages = document.querySelectorAll('.page');
-
 navLinks.forEach(link=>{
   link.addEventListener('click',()=>{
     navLinks.forEach(a=>a.classList.remove('active'));
@@ -161,29 +155,44 @@ navLinks.forEach(link=>{
   });
 });
 
-/* عرض البطاقات */
-function makeCard(c){const d=document.createElement('div');d.className='card';d.innerHTML=`<div class='thumb'><img src='${c.img}'></div><div class='meta'><h3>${c.name}</h3><p class='muted'>${c.role||c.desc}</p></div>`;d.addEventListener('click',()=>openModal('item',c.id));return d;}
-function renderGrid(gridId,data){const g=document.getElementById(gridId);g.innerHTML='';data.forEach(d=>g.appendChild(makeCard(d)));}
+// =====================
+// إنشاء البطاقات
+// =====================
+function makeCard(c){
+  const d=document.createElement('div');
+  d.className='card';
+  d.innerHTML=`<div class='thumb'><img src='${c.img}'></div><div class='meta'><h3>${c.name}</h3><p class='muted'>${c.role||c.desc}</p></div>`;
+  d.addEventListener('click',()=>openModal(c.id));
+  return d;
+}
+function renderGrid(gridId,data){
+  const g=document.getElementById(gridId);
+  g.innerHTML='';
+  data.forEach(d=>g.appendChild(makeCard(d)));
+}
 renderGrid('charactersGrid',DB.characters);
-renderGrid('crewGrid',DB.crew);
+renderGrid('crewGrid',DB.characters.slice(1,10)); // مثال
 renderGrid('powersGrid',DB.powers);
 renderGrid('episodesGrid',DB.episodes);
 renderGrid('mapsGrid',DB.maps);
 
-/* Modal */
+// =====================
+// النوافذ المنبثقة
+// =====================
 const modal=document.getElementById('modal');
-function openModal(type,id){
-  let data=[...DB.characters,...DB.crew,...DB.powers,...DB.episodes,...DB.maps].find(x=>x.id===id);
+function openModal(id){
+  let data=[...DB.characters,...DB.powers,...DB.episodes,...DB.maps].find(x=>x.id===id);
   if(!data) return;
-  document.getElementById('modalTitle').textContent = data.name;
-  document.getElementById('modalImg').src = data.img;
-  document.getElementById('modalDesc').textContent = data.role||data.desc||'';
+  document.getElementById('modalTitle').textContent=data.name;
+  document.getElementById('modalImg').src=data.img;
+  document.getElementById('modalDesc').textContent=data.role||data.desc||'';
   modal.classList.add('open');
 }
 function closeModal(e){if(e&&e.stopPropagation)e.stopPropagation(); modal.classList.remove('open');}
 
-/* Bot */
-const BOT_KB=[{q:['لوفي'],a:'لوفي قائد الطاقم وحلمه أن يصبح ملك القراصنة!'}];
+// =====================
+// البوت الذكي
+// =====================
 const botIcon=document.getElementById('botIcon');
 const botPopup=document.getElementById('botPopup');
 const botMessages2=document.getElementById('botMessages2');
@@ -191,11 +200,34 @@ const botInput2=document.getElementById('botInput2');
 const botSend2=document.getElementById('botSend2');
 
 botIcon.addEventListener('click',()=>{botPopup.style.display=(botPopup.style.display==='flex')?'none':'flex';botPopup.style.flexDirection='column';});
+
+const BOT_KB = [...DB.characters,...DB.powers,...DB.episodes].map(item=>{
+  return { keywords:[item.name,...(item.desc?item.desc.split(' '):[])], answer:item.desc };
+});
+
+function addBotMsg(type,text){
+  const d=document.createElement('div');
+  d.className='msg '+(type==='user'?'user':'bot');
+  d.textContent=text;
+  botMessages2.appendChild(d);
+  botMessages2.scrollTop=botMessages2.scrollHeight;
+}
+
+function sendBotMessage(){
+  const txt = botInput2.value.trim();
+  if(!txt) return;
+  addBotMsg('user',txt);
+  botInput2.value='';
+  setTimeout(()=>{
+    let ans='عذرًا، لم أجد إجابة.';
+    BOT_KB.forEach(b=>{b.keywords.forEach(k=>{if(txt.includes(k))ans=b.answer;});});
+    addBotMsg('bot',ans);
+  },300);
+}
+
 botSend2.addEventListener('click',sendBotMessage);
 botInput2.addEventListener('keydown',e=>{if(e.key==='Enter')sendBotMessage();});
 
-function addBotMsg(type,text){const d=document.createElement('div');d.className='msg '+(type==='user'?'user':'bot');d.textContent=text;botMessages2.appendChild(d);botMessages2.scrollTop=botMessages2.scrollHeight;}
-function sendBotMessage(){const txt=botInput2.value.trim();if(!txt)return;addBotMsg('user',txt);botInput2.value='';setTimeout(()=>{let ans='عذرًا، لم أجد إجابة.';BOT_KB.forEach(b=>{b.q.forEach(k=>{if(txt.includes(k))ans=b.a;});});addBotMsg('bot',ans);},300);}
 </script>
 </body>
 </html>
