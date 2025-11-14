@@ -3,51 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AG ANIME — النسخة الموسّعة</title>
+<title>AG ANIME — النسخة المطوّرة WebView</title>
 <style>
-:root{
-  --bg:#000; --panel:#111; --card:#1a1a1a; --accent:#ff3b3b; --accent-2:#ffb86b; --muted:#bdbdbd; --radius:12px;
-}
-body{margin:0;font-family:'Cairo',Tajawal,sans-serif;background:var(--bg);color:#fff;}
-.wrap{padding:8px;display:flex;flex-direction:column;gap:12px;}
-header{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);}
-nav{display:flex;gap:6px;overflow-x:auto;}
-nav a{flex-shrink:0;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:13px;white-space:nowrap;}
-nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;}
-.content{display:flex;flex-direction:column;gap:12px;}
-.panel{background:var(--panel);padding:12px;border-radius:var(--radius);}
-.grid{display:grid;grid-template-columns:1fr;gap:12px;}
-.card{display:flex;gap:8px;align-items:center;padding:10px;border-radius:var(--radius);background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:0.2s;}
-.card:hover{transform:scale(1.02);}
-.thumb{flex:0 0 80px;height:80px;border-radius:8px;overflow:hidden;background:#222;display:flex;align-items:center;justify-content:center;}
-.thumb img{width:100%;height:100%;object-fit:cover;}
+body{margin:0;font-family:'Cairo',Tajawal,sans-serif;background:#000;color:#fff;}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#111;}
+nav{display:flex;overflow-x:auto;}
+nav a{padding:6px 10px;color:#bdbdbd;text-decoration:none;white-space:nowrap;transition:0.2s;}
+nav a.active{color:#111;background:linear-gradient(90deg,#ff3b3b,#ffb86b);border-radius:6px;}
+nav a:hover{opacity:0.8;}
+.content{padding:10px;}
+.panel{background:#111;padding:10px;margin-bottom:10px;border-radius:8px;}
+.grid{display:block;}
+.card{background:#1a1a1a;padding:10px;margin-bottom:8px;border-radius:8px;cursor:pointer;display:flex;align-items:center;transition:0.2s;}
+.card:hover{transform:scale(1.03);background:#222;}
+.thumb{width:60px;height:60px;margin-left:8px;}
+.thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px;}
 .meta h3{margin:0;font-size:14px;}
-.meta p{margin:4px 0 0 0;color:var(--muted);font-size:12px;}
-
-/* Modal */
-.modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,0.8);visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s;z-index:999;}
-.modal.open{visibility:visible;opacity:1;}
-.modal-card{width:95%;background:#1a1a1a;padding:12px;border-radius:12px;}
-.modal-row{display:flex;flex-direction:column;gap:8px;}
-.modal-row img{width:100%;height:auto;border-radius:8px;}
-
-/* Bot */
-#botIcon{position:fixed;bottom:10px;right:10px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;justify-content:center;align-items:center;font-size:26px;color:#111;cursor:pointer;z-index:9999;}
-#botPopup{position:fixed;bottom:70px;right:10px;width:calc(100% - 20px);max-height:60vh;background:#111;border-radius:12px;display:none;flex-direction:column;overflow:hidden;z-index:9999;}
-#botHeader{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:8px;display:flex;justify-content:space-between;color:#111;font-weight:bold;}
-#botHeader button{background:transparent;border:none;font-size:18px;cursor:pointer;}
+.meta p{margin:4px 0 0 0;color:#bdbdbd;font-size:12px;}
+input#searchInput{width:100%;padding:6px;margin:8px 0;border-radius:6px;border:none;background:#222;color:#fff;}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:999;}
+.modal-content{background:#1a1a1a;padding:10px;border-radius:8px;width:90%;max-width:400px;}
+.modal-content img{width:100%;border-radius:8px;margin:8px 0;}
+.modal-content a{color:#ffb86b;text-decoration:none;display:block;margin-top:4px;}
+#botIcon{position:fixed;bottom:10px;right:10px;width:50px;height:50px;background:linear-gradient(135deg,#ff3b3b,#ffb86b);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px;color:#111;cursor:pointer;z-index:999;}
+#botPopup{position:fixed;bottom:70px;right:10px;width:calc(100% - 20px);max-height:60vh;background:#111;border-radius:12px;display:none;flex-direction:column;overflow:hidden;z-index:999;}
+#botHeader{background:linear-gradient(90deg,#ff3b3b,#ffb86b);padding:8px;color:#111;display:flex;justify-content:space-between;}
+#botHeader button{background:none;border:none;font-size:18px;cursor:pointer;}
 #botMessages2{flex:1;padding:8px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
 #botMessages2 .msg.user{align-self:flex-end;background:rgba(255,255,255,0.1);padding:6px;border-radius:6px;}
 #botMessages2 .msg.bot{align-self:flex-start;background:rgba(255,59,59,0.2);padding:6px;border-radius:6px;}
 #botInputRow{display:flex;gap:4px;padding:6px;border-top:1px solid rgba(255,255,255,0.1);}
 #botInput2{flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:#fff;}
-#botSend2{padding:6px 8px;border-radius:6px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;cursor:pointer;}
+#botSend2{padding:6px 8px;border-radius:6px;border:none;background:linear-gradient(90deg,#ff3b3b,#ffb86b);color:#111;cursor:pointer;}
 </style>
 </head>
 <body>
-<div class="wrap">
+
 <header>
-  <div class="logo"><img src="https://i.ibb.co/6X9Gk2B/ag-anime-emblem.png" alt="AG ANIME" style="width:50px;height:50px;border-radius:10px;"></div>
+  <div>AG ANIME</div>
   <nav>
     <a href="#home" class="active" data-target="home">الرئيسية</a>
     <a href="#characters" data-target="characters">الشخصيات</a>
@@ -58,63 +51,45 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
   </nav>
 </header>
 
-<main id="home" class="content page" style="display:block">
-  <section class="panel">
-    <h2>نظرة عامة</h2>
-    <p class="muted">مرحبًا بك في النسخة الموسّعة. كل البيانات قابلة للتعديل، أضف الصور الخاصة بك لاحقًا.</p>
-  </section>
-</main>
-
-<section id="characters" class="content page">
-  <section class="panel">
-    <h2>الشخصيات</h2>
-    <div id="charactersGrid" class="grid"></div>
-  </section>
-</section>
-
-<section id="crew" class="content page">
-  <section class="panel">
-    <h2>طاقم الطاقم</h2>
-    <div id="crewGrid" class="grid"></div>
-  </section>
-</section>
-
-<section id="powers" class="content page">
-  <section class="panel">
-    <h2>القوى والفواكه الشيطانية</h2>
-    <div id="powersGrid" class="grid"></div>
-  </section>
-</section>
-
-<section id="episodes" class="content page">
-  <section class="panel">
-    <h2>الحلقات</h2>
-    <div id="episodesGrid" class="grid"></div>
-  </section>
-</section>
-
-<section id="maps" class="content page">
-  <section class="panel">
-    <h2>الخرائط</h2>
-    <div id="mapsGrid" class="grid"></div>
-  </section>
-</section>
-
-<!-- Modal -->
-<div id="modal" class="modal" onclick="closeModal(event)">
-  <div class="modal-card" onclick="event.stopPropagation()">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h3 id="modalTitle"></h3>
-      <button onclick="closeModal()">إغلاق</button>
-    </div>
-    <div class="modal-row">
-      <img id="modalImg" src="" alt="media">
-      <p id="modalDesc" class="muted"></p>
-    </div>
+<div class="content page" id="home">
+  <div class="panel"><h2>الرئيسية</h2>
+    <p>مرحبًا بك في النسخة الكاملة WebView. جميع القوائم والبطاقات قابلة للعرض هنا.</p>
   </div>
 </div>
 
-<!-- Bot -->
+<!-- شريط بحث عام -->
+<input type="text" id="searchInput" placeholder="ابحث عن شخصية، حلقة، أو قوة...">
+
+<div class="content page" id="characters" style="display:none;">
+  <div class="panel"><h2>الشخصيات</h2><div id="charactersGrid" class="grid"></div></div>
+</div>
+
+<div class="content page" id="crew" style="display:none;">
+  <div class="panel"><h2>طاقم الطاقم</h2><div id="crewGrid" class="grid"></div></div>
+</div>
+
+<div class="content page" id="powers" style="display:none;">
+  <div class="panel"><h2>القوى والفواكه الشيطانية</h2><div id="powersGrid" class="grid"></div></div>
+</div>
+
+<div class="content page" id="episodes" style="display:none;">
+  <div class="panel"><h2>الحلقات</h2><div id="episodesGrid" class="grid"></div></div>
+</div>
+
+<div class="content page" id="maps" style="display:none;">
+  <div class="panel"><h2>الخرائط</h2><div id="mapsGrid" class="grid"></div></div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle"></h3>
+    <img id="modalImg" src="">
+    <p id="modalDesc"></p>
+    <a id="modalLink" href="#" target="_blank">زيارة الصفحة</a>
+    <button onclick="closeModal()">إغلاق</button>
+  </div>
+</div>
+
 <div id="botIcon">🤖</div>
 <div id="botPopup">
   <div id="botHeader">بوت الموقع <button onclick="botPopup.style.display='none'">×</button></div>
@@ -126,47 +101,20 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 </div>
 
 <script>
-// =====================
-// قاعدة بيانات افتراضية (50+ عنصر) — ضع صورك وروابطك هنا
-// =====================
+// ======================
+// قاعدة بيانات افتراضية كاملة
+// ======================
 const DB = {
-  characters: Array.from({length:50},(_,i)=>({
-    id:`char${i+1}`,
-    name:`شخصية ${i+1}`,
-    role:`دور الشخصية ${i+1}`,
-    img:'https://via.placeholder.com/150?text=Char'+(i+1),
-    desc:`وصف تفصيلي للشخصية ${i+1}`
-  })),
-  crew: Array.from({length:10},(_,i)=>({
-    id:`crew${i+1}`,
-    name:`عضو الطاقم ${i+1}`,
-    role:`دوره ${i+1}`,
-    img:'https://via.placeholder.com/150?text=Crew'+(i+1),
-    desc:`وصف عضو الطاقم ${i+1}`
-  })),
-  powers: Array.from({length:20},(_,i)=>({
-    id:`power${i+1}`,
-    name:`القوة ${i+1}`,
-    desc:`وصف القوة ${i+1}`,
-    img:'https://via.placeholder.com/150?text=Power'+(i+1)
-  })),
-  episodes: Array.from({length:30},(_,i)=>({
-    id:`ep${i+1}`,
-    name:`الحلقة ${i+1}`,
-    desc:`وصف الحلقة ${i+1}`,
-    img:'https://via.placeholder.com/150?text=Ep'+(i+1)
-  })),
-  maps: Array.from({length:10},(_,i)=>({
-    id:`map${i+1}`,
-    name:`الخريطة ${i+1}`,
-    desc:`وصف الخريطة ${i+1}`,
-    img:'https://via.placeholder.com/150?text=Map'+(i+1)
-  }))
+  characters: Array.from({length:50},(_,i)=>({id:`char${i}`,name:`شخصية ${i+1}`,role:`دور ${i+1}`,img:'https://via.placeholder.com/80',desc:`وصف الشخصية ${i+1}`,link:'#'})),
+  crew: Array.from({length:10},(_,i)=>({id:`crew${i}`,name:`عضو ${i+1}`,role:`دوره ${i+1}`,img:'https://via.placeholder.com/80',desc:`وصف عضو الطاقم ${i+1}`,link:'#'})),
+  powers: Array.from({length:20},(_,i)=>({id:`power${i}`,name:`القوة ${i+1}`,desc:`وصف القوة ${i+1}`,img:'https://via.placeholder.com/80',link:'#'})),
+  episodes: Array.from({length:30},(_,i)=>({id:`ep${i}`,name:`الحلقة ${i+1}`,desc:`وصف الحلقة ${i+1}`,img:'https://via.placeholder.com/80',link:'#'})),
+  maps: Array.from({length:10},(_,i)=>({id:`map${i}`,name:`الخريطة ${i+1}`,desc:`وصف الخريطة ${i+1}`,img:'https://via.placeholder.com/80',link:'#'}))
 };
 
-// =====================
+// ======================
 // التنقل بين الصفحات
-// =====================
+// ======================
 const navLinks = document.querySelectorAll('nav a');
 const pages = document.querySelectorAll('.page');
 navLinks.forEach(link=>{
@@ -178,57 +126,70 @@ navLinks.forEach(link=>{
   });
 });
 
-// =====================
+// ======================
 // عرض البطاقات
-// =====================
+// ======================
 function makeCard(c){
   const d=document.createElement('div');
   d.className='card';
-  d.innerHTML=`<div class='thumb'><img src='${c.img}'></div><div class='meta'><h3>${c.name}</h3><p class='muted'>${c.role||c.desc}</p></div>`;
-  d.addEventListener('click',()=>openModal(c.id));
+  d.innerHTML=`<div class='thumb'><img src='${c.img}'></div><div class='meta'><h3>${c.name}</h3><p>${c.role||c.desc}</p></div>`;
+  d.addEventListener('click',()=>openModal(c));
   return d;
 }
-
 function renderGrid(gridId,data){
   const g=document.getElementById(gridId);
   g.innerHTML='';
   data.forEach(d=>g.appendChild(makeCard(d)));
 }
+window.addEventListener('load',()=>{
+  renderGrid('charactersGrid',DB.characters);
+  renderGrid('crewGrid',DB.crew);
+  renderGrid('powersGrid',DB.powers);
+  renderGrid('episodesGrid',DB.episodes);
+  renderGrid('mapsGrid',DB.maps);
+});
 
-renderGrid('charactersGrid',DB.characters);
-renderGrid('crewGrid',DB.crew);
-renderGrid('powersGrid',DB.powers);
-renderGrid('episodesGrid',DB.episodes);
-renderGrid('mapsGrid',DB.maps);
-
-// =====================
+// ======================
 // Modal
-// =====================
+// ======================
 const modal=document.getElementById('modal');
-function openModal(id){
-  let data=[...DB.characters,...DB.crew,...DB.powers,...DB.episodes,...DB.maps].find(x=>x.id===id);
-  if(!data) return;
+function openModal(data){
   document.getElementById('modalTitle').textContent=data.name;
   document.getElementById('modalImg').src=data.img;
   document.getElementById('modalDesc').textContent=data.role||data.desc||'';
-  modal.classList.add('open');
+  document.getElementById('modalLink').href=data.link||'#';
+  modal.style.display='flex';
 }
-function closeModal(e){if(e&&e.stopPropagation)e.stopPropagation(); modal.classList.remove('open');}
+function closeModal(){modal.style.display='none';}
 
-// =====================
-// Bot ذكي
-// =====================
+// ======================
+// شريط البحث
+// ======================
+document.getElementById('searchInput').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase();
+  ['characters','crew','powers','episodes','maps'].forEach(section=>{
+    document.getElementById(section+'Grid').childNodes.forEach(card=>{
+      card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+    });
+  });
+});
+
+// ======================
+// Bot
+// ======================
 const botIcon=document.getElementById('botIcon');
 const botPopup=document.getElementById('botPopup');
 const botMessages2=document.getElementById('botMessages2');
 const botInput2=document.getElementById('botInput2');
 const botSend2=document.getElementById('botSend2');
 
-botIcon.addEventListener('click',()=>{botPopup.style.display=(botPopup.style.display==='flex')?'none':'flex';botPopup.style.flexDirection='column';});
+botIcon.addEventListener('click',()=>botPopup.style.display=(botPopup.style.display==='flex')?'none':'flex'));
 
-const BOT_KB = [...DB.characters,...DB.powers,...DB.episodes].map(item=>{
-  return { keywords:[item.name,...(item.desc?item.desc.split(' '):[])], answer:item.desc };
-});
+const BOT_KB = [...DB.characters,...DB.powers,...DB.episodes].map(i=>({keywords:[i.name],answer:i.desc}))
+.concat([
+  {keywords:['لوفي'], answer:'لوفي هو قائد الطاقم وحلمه أن يصبح ملك القراصنة.'},
+  {keywords:['زورو'], answer:'زورو هو السيفي القوي في الطاقم.'}
+]);
 
 function addBotMsg(type,text){
   const d=document.createElement('div');
@@ -237,7 +198,6 @@ function addBotMsg(type,text){
   botMessages2.appendChild(d);
   botMessages2.scrollTop=botMessages2.scrollHeight;
 }
-
 function sendBotMessage(){
   const txt = botInput2.value.trim();
   if(!txt) return;
@@ -245,11 +205,10 @@ function sendBotMessage(){
   botInput2.value='';
   setTimeout(()=>{
     let ans='عذرًا، لم أجد إجابة.';
-    BOT_KB.forEach(b=>{b.keywords.forEach(k=>{if(txt.includes(k))ans=b.answer;});});
+    BOT_KB.forEach(b=>b.keywords.forEach(k=>{if(txt.includes(k))ans=b.answer;}));
     addBotMsg('bot',ans);
-  },300);
+  },200);
 }
-
 botSend2.addEventListener('click',sendBotMessage);
 botInput2.addEventListener('keydown',e=>{if(e.key==='Enter')sendBotMessage();});
 </script>
