@@ -3,17 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AG ANIME — نسخة الهاتف كاملة</title>
+<title>AG ANIME — النسخة الموسّعة</title>
 <style>
 :root{
-  --bg:#000; --panel:#111; --card:#1a1a1a; --accent:#ff3b3b; --accent-2:#ffb86b; --muted:#bdbdbd; --radius:12px; --shadow:0 10px 40px rgba(0,0,0,0.6);
-  --text:#fff;
+  --bg:#000; --panel:#111; --card:#1a1a1a; --accent:#ff3b3b; --accent-2:#ffb86b; --muted:#bdbdbd; --radius:12px;
 }
-body{margin:0;font-family:'Cairo',Tajawal,sans-serif;background:var(--bg);color:var(--text);}
-.wrap{width:100%;margin:0 auto;padding:8px;display:flex;flex-direction:column;gap:12px;}
+body{margin:0;font-family:'Cairo',Tajawal,sans-serif;background:var(--bg);color:#fff;}
+.wrap{padding:8px;display:flex;flex-direction:column;gap:12px;}
 header{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);}
-.logo{width:50px;height:50px;border-radius:10px;overflow:hidden;}
-.logo img{width:100%;height:100%;object-fit:cover;}
 nav{display:flex;gap:6px;overflow-x:auto;}
 nav a{flex-shrink:0;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:13px;white-space:nowrap;}
 nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;}
@@ -26,7 +23,6 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 .thumb img{width:100%;height:100%;object-fit:cover;}
 .meta h3{margin:0;font-size:14px;}
 .meta p{margin:4px 0 0 0;color:var(--muted);font-size:12px;}
-.btn{padding:6px 8px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;font-size:13px;cursor:pointer;}
 
 /* Modal */
 .modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,0.8);visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s;z-index:999;}
@@ -50,9 +46,8 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 </head>
 <body>
 <div class="wrap">
-
 <header>
-  <div class="logo"><img src="https://i.ibb.co/6X9Gk2B/ag-anime-emblem.png" alt="AG ANIME"></div>
+  <div class="logo"><img src="https://i.ibb.co/6X9Gk2B/ag-anime-emblem.png" alt="AG ANIME" style="width:50px;height:50px;border-radius:10px;"></div>
   <nav>
     <a href="#home" class="active" data-target="home">الرئيسية</a>
     <a href="#characters" data-target="characters">الشخصيات</a>
@@ -65,8 +60,8 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 
 <main id="home" class="content page" style="display:block">
   <section class="panel">
-    <h2>نظرة عامة — ون بيس</h2>
-    <p class="muted">مرحبًا بك في قسم One Piece. ملفات مفصلة عن الشخصيات، الطاقم، الفواكه الشيطانية، الهاكي، وقوائم الحلقات.</p>
+    <h2>نظرة عامة</h2>
+    <p class="muted">مرحبًا بك في النسخة الموسّعة. كل البيانات قابلة للتعديل، أضف الصور الخاصة بك لاحقًا.</p>
   </section>
 </main>
 
@@ -86,7 +81,7 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 
 <section id="powers" class="content page">
   <section class="panel">
-    <h2>الفواكه الشيطانية والهاكي</h2>
+    <h2>القوى والفواكه الشيطانية</h2>
     <div id="powersGrid" class="grid"></div>
   </section>
 </section>
@@ -132,13 +127,41 @@ nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));col
 
 <script>
 // =====================
-// قاعدة البيانات
+// قاعدة بيانات افتراضية (50+ عنصر) — ضع صورك وروابطك هنا
 // =====================
 const DB = {
-  characters:[ /* استخدم نفس القائمة الكاملة من الرد السابق */ ],
-  powers:[ /* قائمة القوى كاملة */ ],
-  episodes:[ /* قائمة الحلقات كاملة */ ],
-  maps:[ /* قائمة الخرائط كاملة */ ]
+  characters: Array.from({length:50},(_,i)=>({
+    id:`char${i+1}`,
+    name:`شخصية ${i+1}`,
+    role:`دور الشخصية ${i+1}`,
+    img:'https://via.placeholder.com/150?text=Char'+(i+1),
+    desc:`وصف تفصيلي للشخصية ${i+1}`
+  })),
+  crew: Array.from({length:10},(_,i)=>({
+    id:`crew${i+1}`,
+    name:`عضو الطاقم ${i+1}`,
+    role:`دوره ${i+1}`,
+    img:'https://via.placeholder.com/150?text=Crew'+(i+1),
+    desc:`وصف عضو الطاقم ${i+1}`
+  })),
+  powers: Array.from({length:20},(_,i)=>({
+    id:`power${i+1}`,
+    name:`القوة ${i+1}`,
+    desc:`وصف القوة ${i+1}`,
+    img:'https://via.placeholder.com/150?text=Power'+(i+1)
+  })),
+  episodes: Array.from({length:30},(_,i)=>({
+    id:`ep${i+1}`,
+    name:`الحلقة ${i+1}`,
+    desc:`وصف الحلقة ${i+1}`,
+    img:'https://via.placeholder.com/150?text=Ep'+(i+1)
+  })),
+  maps: Array.from({length:10},(_,i)=>({
+    id:`map${i+1}`,
+    name:`الخريطة ${i+1}`,
+    desc:`وصف الخريطة ${i+1}`,
+    img:'https://via.placeholder.com/150?text=Map'+(i+1)
+  }))
 };
 
 // =====================
@@ -156,7 +179,7 @@ navLinks.forEach(link=>{
 });
 
 // =====================
-// إنشاء البطاقات
+// عرض البطاقات
 // =====================
 function makeCard(c){
   const d=document.createElement('div');
@@ -165,23 +188,25 @@ function makeCard(c){
   d.addEventListener('click',()=>openModal(c.id));
   return d;
 }
+
 function renderGrid(gridId,data){
   const g=document.getElementById(gridId);
   g.innerHTML='';
   data.forEach(d=>g.appendChild(makeCard(d)));
 }
+
 renderGrid('charactersGrid',DB.characters);
-renderGrid('crewGrid',DB.characters.slice(1,10)); // مثال
+renderGrid('crewGrid',DB.crew);
 renderGrid('powersGrid',DB.powers);
 renderGrid('episodesGrid',DB.episodes);
 renderGrid('mapsGrid',DB.maps);
 
 // =====================
-// النوافذ المنبثقة
+// Modal
 // =====================
 const modal=document.getElementById('modal');
 function openModal(id){
-  let data=[...DB.characters,...DB.powers,...DB.episodes,...DB.maps].find(x=>x.id===id);
+  let data=[...DB.characters,...DB.crew,...DB.powers,...DB.episodes,...DB.maps].find(x=>x.id===id);
   if(!data) return;
   document.getElementById('modalTitle').textContent=data.name;
   document.getElementById('modalImg').src=data.img;
@@ -191,7 +216,7 @@ function openModal(id){
 function closeModal(e){if(e&&e.stopPropagation)e.stopPropagation(); modal.classList.remove('open');}
 
 // =====================
-// البوت الذكي
+// Bot ذكي
 // =====================
 const botIcon=document.getElementById('botIcon');
 const botPopup=document.getElementById('botPopup');
@@ -227,7 +252,6 @@ function sendBotMessage(){
 
 botSend2.addEventListener('click',sendBotMessage);
 botInput2.addEventListener('keydown',e=>{if(e.key==='Enter')sendBotMessage();});
-
 </script>
 </body>
 </html>
